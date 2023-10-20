@@ -1,3 +1,5 @@
+import heapq
+
 map = {
     'Neamt': {'Isai': 87},
     'Isai': {'Neamt': 87, 'Vaslui': 92},
@@ -64,5 +66,29 @@ def DFS(init: str, goal: str):
     return cost
 
 
-print(f"Total cost using DFS: {DFS(init, goal)}")
+def UCS(start: str, goal: str):
+    priority_queue = [(0, start, [])]
+    visited = set()
+
+    while priority_queue:
+        (cost, current, path) = heapq.heappop(priority_queue)
+
+        if current not in visited:
+            path = path + [current]
+
+            if current == goal:
+                return path, cost
+
+            visited.add(current)
+
+            for neighbor, weight in map[current].items():
+                if neighbor not in visited:
+                    heapq.heappush(
+                        priority_queue, (cost + weight, neighbor, path))
+
+    return None, float('inf')
+
+
 print(f"Total cost using BFS: {BFS(init, goal)}")
+print(f"Total cost using DFS: {DFS(init, goal)}")
+print(f"Total cost using UCS: {UCS(init, goal)}")
